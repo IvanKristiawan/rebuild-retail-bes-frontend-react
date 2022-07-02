@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useStateContext } from "../contexts/ContextProvider";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -20,6 +21,7 @@ const rows = [
 ];
 
 export function ShowTableSupplier() {
+  const { screenSize } = useStateContext();
   return (
     <TableContainer component={Paper} sx={{ width: "100%" }}>
       <Table aria-label="simple table">
@@ -31,27 +33,24 @@ export function ShowTableSupplier() {
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
               Calories
             </TableCell>
-            {/* <TableCell
-              align="right"
-              sx={{
-                fontWeight: "bold",
-                visibility: { xs: "hidden", sm: "visible" }
-              }}
-            >
-              Fat&nbsp;(g)
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ fontWeight: "bold", visibility: { xs: "hidden" } }}
-            >
-              Carbs&nbsp;(g)
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ fontWeight: "bold", visibility: { xs: "hidden" } }}
-            >
-              Protein&nbsp;(g)
-            </TableCell> */}
+            {screenSize >= 600 && (
+              <>
+                <TableCell
+                  align="right"
+                  sx={{
+                    fontWeight: "bold"
+                  }}
+                >
+                  Fat&nbsp;(g)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                  Carbs&nbsp;(g)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                  Protein&nbsp;(g)
+                </TableCell>
+              </>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -64,15 +63,13 @@ export function ShowTableSupplier() {
                 {row.name}
               </TableCell>
               <TableCell align="right">{row.calories}</TableCell>
-              {/* <TableCell align="right" sx={{ visibility: { xs: "hidden" } }}>
-                {row.fat}
-              </TableCell>
-              <TableCell align="right" sx={{ visibility: { xs: "hidden" } }}>
-                {row.carbs}
-              </TableCell>
-              <TableCell align="right" sx={{ visibility: { xs: "hidden" } }}>
-                {row.protein}
-              </TableCell> */}
+              {screenSize >= 600 && (
+                <>
+                  <TableCell align="right">{row.fat}</TableCell>
+                  <TableCell align="right">{row.carbs}</TableCell>
+                  <TableCell align="right">{row.protein}</TableCell>
+                </>
+              )}
             </TableRow>
           ))}
         </TableBody>

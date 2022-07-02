@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
@@ -13,6 +13,7 @@ import {
   IconButton,
   Tooltip
 } from "@mui/material";
+import { useStateContext } from "./contexts/ContextProvider";
 import { SidebarMenu, ProfileUser, Footer } from "./components";
 import { TampilSupplier } from "./pages/index";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -68,8 +69,27 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function App() {
+  const { screenSize, setScreenSize } = useStateContext();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (screenSize <= 900) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [screenSize]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
