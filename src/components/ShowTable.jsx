@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,70 +9,124 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useStateContext } from "../contexts/ContextProvider";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9)
-];
-
-export function ShowTableSupplier() {
+export function ShowTableSupplier({ currentPosts, searchTerm }) {
   const { screenSize } = useStateContext();
+  let navigate = useNavigate();
   return (
     <TableContainer component={Paper} sx={{ width: "100%" }}>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ fontWeight: "bold" }}>
-              Dessert (100g serving)
-            </TableCell>
-            <TableCell align="right" sx={{ fontWeight: "bold" }}>
-              Calories
-            </TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Kode</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Nama</TableCell>
             {screenSize >= 600 && (
               <>
                 <TableCell
-                  align="right"
                   sx={{
                     fontWeight: "bold"
                   }}
                 >
-                  Fat&nbsp;(g)
+                  Alamat
                 </TableCell>
-                <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  Carbs&nbsp;(g)
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  Protein&nbsp;(g)
-                </TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Kota</TableCell>
               </>
             )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              {screenSize >= 600 && (
-                <>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
-                </>
-              )}
-            </TableRow>
-          ))}
+          {currentPosts
+            .filter((val) => {
+              if (searchTerm === "") {
+                return val;
+              } else if (
+                val.namaSupplier
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.kode.toUpperCase().includes(searchTerm.toUpperCase()) ||
+                val.alamatSupplier
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.kota.toUpperCase().includes(searchTerm.toUpperCase())
+              ) {
+                return val;
+              }
+            })
+            .map((user, index) => (
+              <TableRow
+                key={user._id}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  "&:hover": { bgcolor: "#eeeeee" },
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  navigate(`/supplier/${user._id}`);
+                  window.location.reload();
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  {user.kode}
+                </TableCell>
+                <TableCell>{user.namaSupplier}</TableCell>
+                {screenSize >= 600 && (
+                  <>
+                    <TableCell>{user.alamatSupplier}</TableCell>
+                    <TableCell>{user.kota}</TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+export function ShowTableGroupStok({ currentPosts, searchTerm }) {
+  const { screenSize } = useStateContext();
+  let navigate = useNavigate();
+  return (
+    <TableContainer component={Paper} sx={{ width: "100%" }}>
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ fontWeight: "bold" }}>Kode</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Nama Group</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {currentPosts
+            .filter((val) => {
+              if (searchTerm === "") {
+                return val;
+              } else if (
+                val.namaGroup
+                  .toUpperCase()
+                  .includes(searchTerm.toUpperCase()) ||
+                val.kode.toUpperCase().includes(searchTerm.toUpperCase())
+              ) {
+                return val;
+              }
+            })
+            .map((user, index) => (
+              <TableRow
+                key={user._id}
+                sx={{
+                  "&:last-child td, &:last-child th": { border: 0 },
+                  "&:hover": { bgcolor: "#eeeeee" },
+                  cursor: "pointer"
+                }}
+                onClick={() => {
+                  navigate(`/groupStok/${user._id}`);
+                  window.location.reload();
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  {user.kode}
+                </TableCell>
+                <TableCell>{user.namaGroup}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

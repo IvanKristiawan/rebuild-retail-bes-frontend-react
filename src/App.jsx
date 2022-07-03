@@ -15,7 +15,14 @@ import {
 } from "@mui/material";
 import { useStateContext } from "./contexts/ContextProvider";
 import { SidebarMenu, ProfileUser, Footer } from "./components";
-import { TampilSupplier } from "./pages/index";
+import {
+  TampilSupplier,
+  TambahSupplier,
+  UbahSupplier,
+  TampilGroupStok,
+  TambahGroupStok,
+  UbahGroupStok
+} from "./pages/index";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -103,7 +110,7 @@ export default function App() {
     <Box sx={{ display: "flex" }}>
       <BrowserRouter>
         <CssBaseline />
-        <AppBar position="fixed" open={open} sx={{ bgcolor: "primary.dark" }}>
+        <AppBar position="fixed" open={open} sx={{ bgcolor: "primary.main" }}>
           <Toolbar>
             <Tooltip title="Menu">
               <IconButton
@@ -156,41 +163,27 @@ export default function App() {
             <SidebarMenu />
           </List>
         </Drawer>
-        <Main open={open}>
+        <Main open={open} sx={{ bgcolor: "#fafafa", minHeight: "100vh" }}>
           <Routes>
-            <Route path="/supplier" element={<TampilSupplier />}></Route>
-          </Routes>
+            {/* Master */}
+            {/* Supplier */}
+            <Route path="/supplier" element={<TampilSupplier />} />
+            <Route
+              path="/supplier/tambahSupplier"
+              element={<TambahSupplier />}
+            />
+            <Route path="/supplier/:id" element={<TampilSupplier />} />
+            <Route path="/supplier/:id/edit" element={<UbahSupplier />} />
 
-          {/* <DrawerHeader />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography> */}
+            {/* Group Stok */}
+            <Route path="/groupStok" element={<TampilGroupStok />} />
+            <Route
+              path="/groupStok/tambahGroupStok"
+              element={<TambahGroupStok />}
+            />
+            <Route path="/groupStok/:id" element={<TampilGroupStok />} />
+            <Route path="/groupStok/:id/edit" element={<UbahGroupStok />} />
+          </Routes>
           <Footer />
         </Main>
       </BrowserRouter>

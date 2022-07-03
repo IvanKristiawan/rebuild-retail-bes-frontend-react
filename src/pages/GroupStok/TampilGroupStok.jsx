@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, TextField, Typography, Divider, Pagination } from "@mui/material";
-import { ShowTableSupplier } from "../../components/ShowTable";
+import { ShowTableGroupStok } from "../../components/ShowTable";
 import {
   SearchBar,
   Loader,
@@ -12,15 +12,11 @@ import {
 import { tempUrl } from "../../contexts/ContextProvider";
 import { useStateContext } from "../../contexts/ContextProvider";
 
-const TampilSupplier = () => {
+const TampilGroupStok = () => {
   const { screenSize } = useStateContext();
   const { id } = useParams();
   const [kode, setKode] = useState("");
-  const [namaSupplier, setNama] = useState("");
-  const [alamatSupplier, setAlamat] = useState("");
-  const [kota, setKota] = useState("");
-  const [telp, setTelp] = useState("");
-  const [npwp, setNpwp] = useState("");
+  const [namaGroup, setNama] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUser] = useState([]);
   const navigate = useNavigate();
@@ -46,36 +42,28 @@ const TampilSupplier = () => {
 
   const getUsers = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/suppliers`);
+    const response = await axios.get(`${tempUrl}/groupStoks`);
     setUser(response.data);
     setLoading(false);
   };
 
   const getUserById = async () => {
     if (id) {
-      const response = await axios.get(`${tempUrl}/suppliers/${id}`);
+      const response = await axios.get(`${tempUrl}/groupStoks/${id}`);
       setKode(response.data.kode);
-      setNama(response.data.namaSupplier);
-      setAlamat(response.data.alamatSupplier);
-      setKota(response.data.kota);
-      setTelp(response.data.telp);
-      setNpwp(response.data.npwp);
+      setNama(response.data.namaGroup);
     }
   };
 
   const deleteUser = async (id) => {
     try {
       setLoading(true);
-      await axios.delete(`${tempUrl}/suppliers/${id}`);
+      await axios.delete(`${tempUrl}/groupStoks/${id}`);
       getUsers();
       setKode("");
       setNama("");
-      setAlamat("");
-      setKota("");
-      setTelp("");
-      setNpwp("");
       setLoading(false);
-      navigate("/supplier");
+      navigate("/groupStok");
     } catch (error) {
       console.log(error);
     }
@@ -88,10 +76,8 @@ const TampilSupplier = () => {
     if (searchTerm === "") {
       return val;
     } else if (
-      val.namaSupplier.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.kode.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.alamatSupplier.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.kota.toUpperCase().includes(searchTerm.toUpperCase())
+      val.namaGroup.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.kode.toUpperCase().includes(searchTerm.toUpperCase())
     ) {
       return val;
     }
@@ -108,7 +94,7 @@ const TampilSupplier = () => {
     <Box sx={{ pt: 10 }}>
       <Typography color="#757575">Master</Typography>
       <Typography variant="h4" sx={{ fontWeight: "900" }}>
-        Supplier
+        Group Stok
       </Typography>
       <Box
         sx={{
@@ -121,8 +107,8 @@ const TampilSupplier = () => {
         <ButtonModifier
           id={id}
           kode={kode}
-          addLink={`/supplier/tambahSupplier`}
-          editLink={`/supplier/${id}/edit`}
+          addLink={`/groupStok/tambahGroupStok`}
+          editLink={`/groupStok/${id}/edit`}
           deleteUser={deleteUser}
         />
       </Box>
@@ -141,9 +127,8 @@ const TampilSupplier = () => {
             display: "flex",
             flex: 1,
             flexDirection: "column",
-            mr: {
-              xs: 0,
-              sm: 10
+            maxWidth: {
+              md: "40vw"
             }
           }}
         >
@@ -159,55 +144,13 @@ const TampilSupplier = () => {
           />
           <TextField
             id="outlined-basic"
-            label="Nama"
+            label="Nama Group Stok"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
             InputProps={{
               readOnly: true
             }}
-            value={namaSupplier}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Alamat"
-            variant="filled"
-            sx={{ display: "flex", mt: 4 }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={alamatSupplier}
-          />
-        </Box>
-        <Box sx={{ display: "flex", flex: 1, flexDirection: "column" }}>
-          <TextField
-            id="outlined-basic"
-            label="Kota"
-            variant="filled"
-            sx={{ display: "flex", mt: 4 }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={kota}
-          />
-          <TextField
-            id="outlined-basic"
-            label="Telpon"
-            variant="filled"
-            sx={{ display: "flex", mt: 4 }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={telp}
-          />
-          <TextField
-            id="outlined-basic"
-            label="NPWP"
-            variant="filled"
-            sx={{ display: "flex", mt: 4 }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={npwp}
+            value={namaGroup}
           />
         </Box>
       </Box>
@@ -216,7 +159,7 @@ const TampilSupplier = () => {
         <SearchBar setSearchTerm={setSearchTerm} />
       </Box>
       <Box sx={{ pt: 4, display: "flex", justifyContent: "center" }}>
-        <ShowTableSupplier
+        <ShowTableGroupStok
           currentPosts={currentPosts}
           searchTerm={searchTerm}
         />
@@ -244,4 +187,4 @@ const TampilSupplier = () => {
   );
 };
 
-export default TampilSupplier;
+export default TampilGroupStok;

@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState } from "react";
 
 const StateContext = createContext();
 
+export const tempUrl = "https://retail-bes.herokuapp.com";
+
 export const ContextProvider = ({ children }) => {
   const [screenSize, setScreenSize] = useState(undefined);
 
