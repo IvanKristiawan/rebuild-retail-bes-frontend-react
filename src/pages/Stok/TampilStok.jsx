@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, TextField, Typography, Divider, Pagination } from "@mui/material";
-import { ShowTableSupplier } from "../../components/ShowTable";
+import {
+  Box,
+  TextField,
+  Typography,
+  Divider,
+  Pagination,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Backdrop
+} from "@mui/material";
+import { ShowTableStok } from "../../components/ShowTable";
 import {
   SearchBar,
   Loader,
@@ -12,15 +23,21 @@ import {
 import { tempUrl } from "../../contexts/ContextProvider";
 import { useStateContext } from "../../contexts/ContextProvider";
 
-const TampilSupplier = () => {
+const TampilStok = () => {
   const { screenSize } = useStateContext();
   const { id } = useParams();
+  const [open, setOpen] = useState(false);
+  const [gambar, setGambar] = useState("");
   const [kode, setKode] = useState("");
-  const [namaSupplier, setNama] = useState("");
-  const [alamatSupplier, setAlamat] = useState("");
-  const [kota, setKota] = useState("");
-  const [telp, setTelp] = useState("");
-  const [npwp, setNpwp] = useState("");
+  const [namaStok, setNama] = useState("");
+  const [merk, setMerk] = useState("");
+  const [satuanKecil, setSatuanKecil] = useState("");
+  const [satuanBesar, setSatuanBesar] = useState("");
+  const [konversi, setKonversi] = useState("");
+  const [qty, setQty] = useState("");
+  const [hargaJualKecil, setHargaJualKecil] = useState("");
+  const [hargaJualBesar, setHargaJualBesar] = useState("");
+  const [kodeGrup, setKodeGrup] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUser] = useState([]);
   const navigate = useNavigate();
@@ -36,10 +53,10 @@ const TampilSupplier = () => {
     if (searchTerm === "") {
       return val;
     } else if (
-      val.namaSupplier.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.namaStok.toUpperCase().includes(searchTerm.toUpperCase()) ||
       val.kode.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.alamatSupplier.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.kota.toUpperCase().includes(searchTerm.toUpperCase())
+      val.satuanKecil.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.satuanBesar.toUpperCase().includes(searchTerm.toUpperCase())
     ) {
       return val;
     }
@@ -63,36 +80,46 @@ const TampilSupplier = () => {
 
   const getUsers = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/suppliers`);
+    const response = await axios.get(`${tempUrl}/stoks`);
     setUser(response.data);
     setLoading(false);
   };
 
   const getUserById = async () => {
     if (id) {
-      const response = await axios.get(`${tempUrl}/suppliers/${id}`);
+      const response = await axios.get(`${tempUrl}/stoks/${id}`);
+      setGambar(response.data.gambar);
       setKode(response.data.kode);
-      setNama(response.data.namaSupplier);
-      setAlamat(response.data.alamatSupplier);
-      setKota(response.data.kota);
-      setTelp(response.data.telp);
-      setNpwp(response.data.npwp);
+      setNama(response.data.namaStok);
+      setMerk(response.data.merk);
+      setSatuanKecil(response.data.satuanKecil);
+      setSatuanBesar(response.data.satuanBesar);
+      setKonversi(response.data.konversi);
+      setQty(response.data.qty);
+      setHargaJualKecil(response.data.hargaJualKecil);
+      setHargaJualBesar(response.data.hargaJualBesar);
+      setKodeGrup(response.data.kodeGrup);
     }
   };
 
   const deleteUser = async (id) => {
     try {
       setLoading(true);
-      await axios.delete(`${tempUrl}/suppliers/${id}`);
+      await axios.delete(`${tempUrl}/stoks/${id}`);
       getUsers();
+      setGambar("");
       setKode("");
       setNama("");
-      setAlamat("");
-      setKota("");
-      setTelp("");
-      setNpwp("");
+      setMerk("");
+      setSatuanKecil("");
+      setSatuanBesar("");
+      setKonversi("");
+      setQty("");
+      setHargaJualKecil("");
+      setHargaJualBesar("");
+      setKodeGrup("");
       setLoading(false);
-      navigate("/supplier");
+      navigate("/stok");
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +133,7 @@ const TampilSupplier = () => {
     <Box sx={{ pt: 10 }}>
       <Typography color="#757575">Master</Typography>
       <Typography variant="h4" sx={{ fontWeight: "900" }}>
-        Supplier
+        Stok
       </Typography>
       <Box
         sx={{
@@ -119,12 +146,61 @@ const TampilSupplier = () => {
         <ButtonModifier
           id={id}
           kode={kode}
-          addLink={`/supplier/tambahSupplier`}
-          editLink={`/supplier/${id}/edit`}
+          addLink={`/stok/tambahStok`}
+          editLink={`/stok/${id}/edit`}
           deleteUser={deleteUser}
         />
       </Box>
       <Divider sx={{ pt: 4 }} />
+
+      {gambar && (
+        <Box sx={{ display: "flex" }}>
+          <Card
+            sx={{ maxWidth: 345 }}
+            sx={{ m: "auto", mt: 2 }}
+            onClick={() => setOpen(!open)}
+          >
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                height="200px"
+                src={gambar}
+                alt={namaStok}
+              />
+              <CardContent>
+                <Typography gutterBottom component="div">
+                  Lihat Gambar
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Box>
+      )}
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+        onClick={() => setOpen(false)}
+      >
+        <Box sx={{ display: "flex" }}>
+          <Card sx={{ maxWidth: 345 }} sx={{ m: "auto", mt: 2 }}>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                src={gambar}
+                alt={namaStok}
+                sx={{
+                  height: {
+                    xs: "300px",
+                    sm: "500px"
+                  }
+                }}
+              />
+            </CardActionArea>
+          </Card>
+        </Box>
+      </Backdrop>
+
       <Box
         sx={{
           display: "flex",
@@ -147,6 +223,16 @@ const TampilSupplier = () => {
         >
           <TextField
             id="outlined-basic"
+            label="Kode Group"
+            variant="filled"
+            sx={{ display: "flex", mt: 4 }}
+            InputProps={{
+              readOnly: true
+            }}
+            value={kodeGrup}
+          />
+          <TextField
+            id="outlined-basic"
             label="Kode"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
@@ -163,49 +249,79 @@ const TampilSupplier = () => {
             InputProps={{
               readOnly: true
             }}
-            value={namaSupplier}
+            value={namaStok}
           />
           <TextField
             id="outlined-basic"
-            label="Alamat"
+            label="Merk"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
             InputProps={{
               readOnly: true
             }}
-            value={alamatSupplier}
+            value={merk}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Quantity"
+            variant="filled"
+            sx={{ display: "flex", mt: 4 }}
+            InputProps={{
+              readOnly: true
+            }}
+            value={qty}
           />
         </Box>
         <Box sx={{ display: "flex", flex: 1, flexDirection: "column" }}>
           <TextField
             id="outlined-basic"
-            label="Kota"
+            label="Satuan Kecil"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
             InputProps={{
               readOnly: true
             }}
-            value={kota}
+            value={satuanKecil}
           />
           <TextField
             id="outlined-basic"
-            label="Telpon"
+            label="Satuan Besar"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
             InputProps={{
               readOnly: true
             }}
-            value={telp}
+            value={satuanBesar}
           />
           <TextField
             id="outlined-basic"
-            label="NPWP"
+            label="Konversi"
             variant="filled"
             sx={{ display: "flex", mt: 4 }}
             InputProps={{
               readOnly: true
             }}
-            value={npwp}
+            value={konversi}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Harga Jual Kecil"
+            variant="filled"
+            sx={{ display: "flex", mt: 4 }}
+            InputProps={{
+              readOnly: true
+            }}
+            value={hargaJualKecil}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Harga Jual Besar"
+            variant="filled"
+            sx={{ display: "flex", mt: 4 }}
+            InputProps={{
+              readOnly: true
+            }}
+            value={hargaJualBesar}
           />
         </Box>
       </Box>
@@ -214,10 +330,7 @@ const TampilSupplier = () => {
         <SearchBar setSearchTerm={setSearchTerm} />
       </Box>
       <Box sx={{ pt: 4, display: "flex", justifyContent: "center" }}>
-        <ShowTableSupplier
-          currentPosts={currentPosts}
-          searchTerm={searchTerm}
-        />
+        <ShowTableStok currentPosts={currentPosts} searchTerm={searchTerm} />
       </Box>
       <Box sx={{ pt: 4, display: "flex", justifyContent: "center" }}>
         {screenSize <= 600 ? (
@@ -242,4 +355,4 @@ const TampilSupplier = () => {
   );
 };
 
-export default TampilSupplier;
+export default TampilStok;

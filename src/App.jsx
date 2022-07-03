@@ -21,7 +21,10 @@ import {
   UbahSupplier,
   TampilGroupStok,
   TambahGroupStok,
-  UbahGroupStok
+  UbahGroupStok,
+  TampilStok,
+  TambahStok,
+  UbahStok
 } from "./pages/index";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -183,6 +186,11 @@ export default function App() {
             />
             <Route path="/groupStok/:id" element={<TampilGroupStok />} />
             <Route path="/groupStok/:id/edit" element={<UbahGroupStok />} />
+            {/* Stok */}
+            <Route path="/stok" element={<TampilStok />} />
+            <Route path="/stok/:id" element={<TampilStok />} />
+            <Route path="/stok/:id/edit" element={<UbahStok />} />
+            <Route path="/stok/tambahStok" element={<TambahStok />} />
           </Routes>
           <Footer />
         </Main>

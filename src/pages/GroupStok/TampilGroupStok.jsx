@@ -25,7 +25,22 @@ const TampilGroupStok = () => {
   let [page, setPage] = useState(1);
   const PER_PAGE = 24;
 
-  const count = Math.ceil(users.length / PER_PAGE);
+  // Get current posts
+  const indexOfLastPost = page * PER_PAGE;
+  const indexOfFirstPost = indexOfLastPost - PER_PAGE;
+  const tempPosts = users.filter((val) => {
+    if (searchTerm === "") {
+      return val;
+    } else if (
+      val.namaGroup.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      val.kode.toUpperCase().includes(searchTerm.toUpperCase())
+    ) {
+      return val;
+    }
+  });
+  const currentPosts = tempPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const count = Math.ceil(tempPosts.length / PER_PAGE);
   const _DATA = usePagination(users, PER_PAGE);
 
   const handleChange = (e, p) => {
@@ -68,23 +83,6 @@ const TampilGroupStok = () => {
       console.log(error);
     }
   };
-
-  // Get current posts
-  const indexOfLastPost = page * PER_PAGE;
-  const indexOfFirstPost = indexOfLastPost - PER_PAGE;
-  const tempPosts = users.filter((val) => {
-    if (searchTerm === "") {
-      return val;
-    } else if (
-      val.namaGroup.toUpperCase().includes(searchTerm.toUpperCase()) ||
-      val.kode.toUpperCase().includes(searchTerm.toUpperCase())
-    ) {
-      return val;
-    }
-  });
-  const currentPosts = tempPosts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (pageNumber) => setPage(pageNumber);
 
   if (loading) {
     return <Loader />;
