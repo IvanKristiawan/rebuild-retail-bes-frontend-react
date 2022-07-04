@@ -108,7 +108,7 @@ function SidebarMenu() {
       <Collapse in={openTransaksi} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <Link
-            to="/pembelianStok"
+            to="/daftarPembelianStok"
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <ListItemButton sx={{ pl: 4 }}>
@@ -119,7 +119,7 @@ function SidebarMenu() {
             </ListItemButton>
           </Link>
           <Link
-            to="/penjualanStok"
+            to="/daftarPenjualanStok"
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <ListItemButton sx={{ pl: 4 }}>

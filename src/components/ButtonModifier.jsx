@@ -16,7 +16,6 @@ const ButtonModifier = ({ id, kode, addLink, editLink, deleteUser }) => {
         size="small"
         onClick={() => {
           navigate(addLink);
-          // window.location.reload();
         }}
       >
         Tambah

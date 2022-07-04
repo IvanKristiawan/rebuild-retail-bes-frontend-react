@@ -29,7 +29,7 @@ const TambahStok = () => {
   const [satuanKecil, setSatuanKecil] = useState("");
   const [satuanBesar, setSatuanBesar] = useState("");
   const [konversi, setKonversi] = useState("");
-  const [qty, setQty] = useState("");
+  const [qty, setQty] = useState(0);
   const [hargaJualKecil, setHargaJualKecil] = useState("");
   const [hargaJualBesar, setHargaJualBesar] = useState("");
   const [grup, setGrup] = useState([]);

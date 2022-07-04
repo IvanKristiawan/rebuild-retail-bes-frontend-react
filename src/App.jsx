@@ -24,7 +24,19 @@ import {
   UbahGroupStok,
   TampilStok,
   TambahStok,
-  UbahStok
+  UbahStok,
+  TampilDaftarPembelianStok,
+  TambahPembelianStok,
+  TampilPembelianStok,
+  UbahPembelianStok,
+  TambahAPembelianStok,
+  TampilAPembelianStok,
+  TampilDaftarPenjualanStok,
+  TambahPenjualanStok,
+  TampilPenjualanStok,
+  UbahPenjualanStok,
+  TambahAPenjualanStok,
+  TampilAPenjualanStok
 } from "./pages/index";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -191,6 +203,58 @@ export default function App() {
             <Route path="/stok/:id" element={<TampilStok />} />
             <Route path="/stok/:id/edit" element={<UbahStok />} />
             <Route path="/stok/tambahStok" element={<TambahStok />} />
+            {/* Pembelian Stok */}
+            <Route
+              path="/daftarPembelianStok"
+              element={<TampilDaftarPembelianStok />}
+            />
+            <Route
+              path="/daftarPembelianStok/pembelianStok/tambahPembelianStok"
+              element={<TambahPembelianStok />}
+            />
+            <Route
+              path="/daftarPembelianStok/pembelianStok/:id"
+              element={<TampilPembelianStok />}
+            />
+            <Route
+              path="/daftarPembelianStok/pembelianStok/:id/edit"
+              element={<UbahPembelianStok />}
+            />
+            {/* A Pembelian Stok */}
+            <Route
+              path="/daftarPembelianStok/pembelianStok/:id/tambahAPembelianStok"
+              element={<TambahAPembelianStok />}
+            />
+            <Route
+              path="/daftarPembelianStok/pembelianStok/:id/:idAPembelianStok"
+              element={<TampilAPembelianStok />}
+            />
+            {/* Penjualan Stok */}
+            <Route
+              path="/daftarPenjualanStok"
+              element={<TampilDaftarPenjualanStok />}
+            />
+            <Route
+              path="/daftarPenjualanStok/penjualanStok/tambahPenjualanStok"
+              element={<TambahPenjualanStok />}
+            />
+            <Route
+              path="/daftarPenjualanStok/penjualanStok/:id"
+              element={<TampilPenjualanStok />}
+            />
+            <Route
+              path="/daftarPenjualanStok/penjualanStok/:id/edit"
+              element={<UbahPenjualanStok />}
+            />
+            {/* A Penjualan Stok */}
+            <Route
+              path="/daftarPenjualanStok/penjualanStok/:id/tambahAPenjualanStok"
+              element={<TambahAPenjualanStok />}
+            />
+            <Route
+              path="/daftarPenjualanStok/penjualanStok/:id/:idAPenjualanStok"
+              element={<TampilAPenjualanStok />}
+            />
           </Routes>
           <Footer />
         </Main>
