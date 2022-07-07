@@ -26,8 +26,7 @@ const TambahAPembelianStok = () => {
   const [loading, setLoading] = useState(false);
 
   const stokOptions = stoks.map((stok) => ({
-    label: stok.kode,
-    namaStok: stok.namaStok
+    label: `${stok.kode} - ${stok.namaStok}`
   }));
 
   useEffect(() => {
@@ -114,16 +113,10 @@ const TambahAPembelianStok = () => {
             disablePortal
             id="combo-box-demo"
             options={stokOptions}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box component="li" {...props}>
-                {option.label} - {option.namaStok}
-              </Box>
-            )}
             renderInput={(params) => (
               <TextField {...params} label="Kode Stok" />
             )}
-            onInputChange={(e, value) => setKodeStok(value)}
+            onInputChange={(e, value) => setKodeStok(value.split(" ", 1)[0])}
             sx={{ mt: 4 }}
           />
           <TextField

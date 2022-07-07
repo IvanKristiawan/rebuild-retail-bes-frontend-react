@@ -16,7 +16,7 @@ import SaveIcon from "@mui/icons-material/Save";
 const TambahPembelianStok = () => {
   const [nomorNota, setNomorNota] = useState("");
   const [jenis, setJenis] = useState("TUNAI");
-  const [kodeSupplier, setKodeSupplier] = useState("1");
+  const [kodeSupplier, setKodeSupplier] = useState("");
   const [suppliers, setSuppliers] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,7 @@ const TambahPembelianStok = () => {
   const jenisTransaksi = [{ label: "TUNAI" }, { label: "KREDIT" }];
 
   const supplierOptions = suppliers.map((supplier) => ({
-    label: supplier.kode,
-    namaSupplier: supplier.namaSupplier
+    label: `${supplier.kode} - ${supplier.namaSupplier}`
   }));
 
   useEffect(() => {
@@ -101,21 +100,18 @@ const TambahPembelianStok = () => {
             renderInput={(params) => (
               <TextField {...params} label="Jenis Transaksi" />
             )}
+            onInputChange={(e, value) => setJenis(value)}
           />
           <Autocomplete
             disablePortal
             id="combo-box-demo"
             options={supplierOptions}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box component="li" {...props}>
-                {option.label} - {option.namaSupplier}
-              </Box>
-            )}
             renderInput={(params) => (
               <TextField {...params} label="Kode Groups" />
             )}
-            onInputChange={(e, value) => setKodeSupplier(value)}
+            onInputChange={(e, value) =>
+              setKodeSupplier(value.split(" ", 1)[0])
+            }
             sx={{ mt: 4 }}
           />
         </Box>

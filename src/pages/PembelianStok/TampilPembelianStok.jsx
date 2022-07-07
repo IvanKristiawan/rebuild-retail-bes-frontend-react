@@ -80,7 +80,10 @@ const TampilPembelianStok = () => {
       setLoading(true);
       for (let aPembelianStok of aPembelianStoks) {
         for (let stok of stoks) {
-          if (aPembelianStok.kodeStok === stok.kode) {
+          if (
+            aPembelianStok.kodeStok === stok.kode &&
+            aPembelianStok.nomorNota === nomorNota
+          ) {
             let newQty = stok.qty - aPembelianStok.qty;
             await axios.patch(`${tempUrl}/stoks/${stok._id}`, {
               qty: newQty

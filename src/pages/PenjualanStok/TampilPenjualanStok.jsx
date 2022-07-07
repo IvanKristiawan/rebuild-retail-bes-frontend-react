@@ -70,7 +70,10 @@ const TampilPenjualanStok = () => {
       setLoading(true);
       for (let aPenjualanStok of aPenjualanStoks) {
         for (let stok of stoks) {
-          if (aPenjualanStok.kodeStok === stok.kode) {
+          if (
+            aPenjualanStok.kodeStok === stok.kode &&
+            aPenjualanStok.nomorNota === nomorNota
+          ) {
             let newQty = stok.qty + aPenjualanStok.qty;
             await axios.patch(`${tempUrl}/stoks/${stok._id}`, {
               qty: newQty
