@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Box, TextField, Typography, Divider, Pagination } from "@mui/material";
 import { ShowTablePenjualanStok } from "../../components/ShowTable";
 import { Loader, usePagination, ButtonModifier } from "../../components";
@@ -8,8 +8,9 @@ import { tempUrl } from "../../contexts/ContextProvider";
 import { useStateContext } from "../../contexts/ContextProvider";
 
 const TampilPenjualanStok = () => {
+  const location = useLocation();
+  const id = location.pathname.split("/")[3];
   const { screenSize } = useStateContext();
-  const { id } = useParams();
   const [nomorNota, setNomorNota] = useState("");
   const [jenis, setJenis] = useState("");
   const [total, setTotal] = useState("");
@@ -40,7 +41,7 @@ const TampilPenjualanStok = () => {
     {
       id && getUserById();
     }
-  }, []);
+  }, [id]);
 
   const getStoks = async () => {
     setLoading(true);
@@ -176,23 +177,13 @@ const TampilPenjualanStok = () => {
         />
       </Box>
       <Box sx={{ pt: 4, display: "flex", justifyContent: "center" }}>
-        {screenSize <= 600 ? (
-          <Pagination
-            count={count}
-            size="large"
-            page={page}
-            onChange={handleChange}
-            color="primary"
-            size="small"
-          />
-        ) : (
-          <Pagination
-            count={count}
-            page={page}
-            onChange={handleChange}
-            color="primary"
-          />
-        )}
+        <Pagination
+          count={count}
+          page={page}
+          onChange={handleChange}
+          color="primary"
+          size={screenSize <= 600 ? "small" : "large"}
+        />
       </Box>
     </Box>
   );

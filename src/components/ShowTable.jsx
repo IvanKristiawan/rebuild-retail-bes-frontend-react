@@ -61,7 +61,6 @@ export function ShowTableSupplier({ currentPosts, searchTerm }) {
                 }}
                 onClick={() => {
                   navigate(`/supplier/${user._id}`);
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -117,7 +116,6 @@ export function ShowTableGroupStok({ currentPosts, searchTerm }) {
                 }}
                 onClick={() => {
                   navigate(`/groupStok/${user._id}`);
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -189,7 +187,6 @@ export function ShowTableStok({ currentPosts, searchTerm }) {
                 }}
                 onClick={() => {
                   navigate(`/stok/${user._id}`);
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -262,7 +259,6 @@ export function ShowTableDaftarPembelianStok({
                 }}
                 onClick={() => {
                   navigate(`/daftarPembelianStok/pembelianStok/${user._id}`);
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -333,7 +329,6 @@ export function ShowTablePembelianStok({ id, currentPosts, stoks, nomorNota }) {
                   navigate(
                     `/daftarPembelianStok/pembelianStok/${id}/${aPembelianStok._id}`
                   );
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -399,7 +394,6 @@ export function ShowTableDaftarPenjualanStok({ currentPosts, searchTerm }) {
                 }}
                 onClick={() => {
                   navigate(`/daftarPenjualanStok/penjualanStok/${user._id}`);
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">
@@ -458,7 +452,6 @@ export function ShowTablePenjualanStok({ id, currentPosts, stoks, nomorNota }) {
                   navigate(
                     `/daftarPenjualanStok/penjualanStok/${id}/${aPenjualanStok._id}`
                   );
-                  window.location.reload();
                 }}
               >
                 <TableCell component="th" scope="row">

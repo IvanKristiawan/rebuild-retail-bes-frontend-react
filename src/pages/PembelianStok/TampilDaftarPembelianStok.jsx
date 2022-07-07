@@ -104,23 +104,13 @@ const TampilDaftarPembelianStok = () => {
         />
       </Box>
       <Box sx={{ pt: 4, display: "flex", justifyContent: "center" }}>
-        {screenSize <= 600 ? (
-          <Pagination
-            count={count}
-            size="large"
-            page={page}
-            onChange={handleChange}
-            color="primary"
-            size="small"
-          />
-        ) : (
-          <Pagination
-            count={count}
-            page={page}
-            onChange={handleChange}
-            color="primary"
-          />
-        )}
+        <Pagination
+          count={count}
+          page={page}
+          onChange={handleChange}
+          color="primary"
+          size={screenSize <= 600 ? "small" : "large"}
+        />
       </Box>
     </Box>
   );

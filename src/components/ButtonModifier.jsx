@@ -28,7 +28,6 @@ const ButtonModifier = ({ id, kode, addLink, editLink, deleteUser }) => {
             sx={{ textTransform: "none" }}
             onClick={() => {
               navigate(editLink);
-              window.location.reload();
             }}
           >
             Ubah
