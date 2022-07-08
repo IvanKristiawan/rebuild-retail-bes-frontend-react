@@ -13,16 +13,19 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  CardContent,
-  Backdrop
+  CardActions,
+  IconButton
 } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import SaveIcon from "@mui/icons-material/Save";
+import { KeyOffRounded } from "@mui/icons-material";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 const TambahStok = () => {
-  const [imageSelected, setImageSelected] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [arrayImage, setArrayImage] = useState([]);
+  let [arrayImageUrl, setArrayImageUrl] = useState([]);
+  let [tempGambarId, setTempGambarId] = useState([]);
+  let [tempGambar, setTempGambar] = useState([]);
   const [kode, setKode] = useState("");
   const [namaStok, setNama] = useState("");
   const [merk, setMerk] = useState("");
@@ -42,12 +45,22 @@ const TambahStok = () => {
     getUsers();
     getGroupStok();
     getUrlImg();
-  }, [imageSelected]);
+  }, [arrayImage]);
 
   const getUrlImg = () => {
-    if (imageSelected) {
-      setImageUrl(URL.createObjectURL(imageSelected));
-    }
+    Object.keys(arrayImage).map(function (key, index) {
+      arrayImageUrl.push(URL.createObjectURL(arrayImage[key]));
+    });
+  };
+
+  const deleteGambar = (key) => {
+    let tempUrl = [];
+    arrayImageUrl.filter((val) => {
+      if (val !== key) {
+        tempUrl.push(val);
+      }
+    });
+    setArrayImageUrl(tempUrl);
   };
 
   const getUsers = async () => {
@@ -69,32 +82,42 @@ const TambahStok = () => {
     namaGroup: grupStok.namaGroup
   }));
 
+  const saveImage = async (formData) => {
+    try {
+      setLoading(true);
+
+      arrayImage &&
+        (await axios
+          .post(
+            "https://api.cloudinary.com/v1_1/dbtag5lau/image/upload",
+            formData
+          )
+          .then((response) => {
+            tempGambar.push(response.data.url);
+            tempGambarId.push(response.data.public_id);
+          })
+          .catch((e) => {
+            console.log(e);
+          }));
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const saveUser = async (e) => {
     e.preventDefault();
-    let tempGambar = "";
-    let tempGambarId = "";
     const formData = new FormData();
-    formData.append("file", imageSelected);
-    formData.append("upload_preset", "pnwyctyw");
+
+    for (let i = 0; i < arrayImage.length; i++) {
+      formData.append("file", arrayImage[i]);
+      formData.append("upload_preset", "pnwyctyw");
+      saveImage(formData);
+    }
 
     try {
       setLoading(true);
-      {
-        imageSelected &&
-          (await axios
-            .post(
-              "https://api.cloudinary.com/v1_1/dbtag5lau/image/upload",
-              formData
-            )
-            .then((response) => {
-              tempGambar = response.data.url;
-              tempGambarId = response.data.public_id;
-            })
-            .catch((e) => {
-              tempGambar = "";
-              console.log(e);
-            }));
-      }
 
       await axios.post(`${tempUrl}/stoks`, {
         gambarId: tempGambarId,
@@ -138,7 +161,8 @@ const TambahStok = () => {
           type="file"
           id="select-image"
           style={{ display: "none" }}
-          onChange={(e) => setImageSelected(e.target.files[0])}
+          onChange={(e) => setArrayImage(e.target.files)}
+          multiple
         />
         <label htmlFor="select-image">
           <Button
@@ -150,50 +174,37 @@ const TambahStok = () => {
             Unggah Gambar
           </Button>
         </label>
-        {imageUrl && imageSelected && (
-          <Card
-            sx={{ maxWidth: 345 }}
-            sx={{ m: "auto", mt: 2 }}
-            onClick={() => setOpen(!open)}
-          >
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                height="200px"
-                src={imageUrl}
-                alt={imageSelected.name}
-              />
-              <CardContent>
-                <Typography gutterBottom component="div">
-                  Lihat Gambar
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        )}
       </Box>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-        onClick={() => setOpen(false)}
-      >
-        <Box sx={{ display: "flex" }}>
-          <Card sx={{ maxWidth: 345 }} sx={{ m: "auto", mt: 2 }}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                src={imageUrl}
-                sx={{
-                  height: {
-                    xs: "300px",
-                    sm: "500px"
-                  }
-                }}
-              />
-            </CardActionArea>
-          </Card>
-        </Box>
-      </Backdrop>
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        {arrayImageUrl &&
+          arrayImage &&
+          arrayImageUrl.map((key) => (
+            <Card sx={{ m: "auto", mt: 2 }}>
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  height="200px"
+                  src={key}
+                  alt={KeyOffRounded.name}
+                />
+              </CardActionArea>
+              <CardActions sx={{ display: "flex", justifyContent: "center" }}>
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                >
+                  <DeleteOutlineIcon
+                    color="error"
+                    onClick={() => {
+                      deleteGambar(key);
+                    }}
+                  />
+                </IconButton>
+              </CardActions>
+            </Card>
+          ))}
+      </Box>
       <Box
         sx={{
           mt: 4,
