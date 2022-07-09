@@ -12,17 +12,14 @@ import {
   Autocomplete,
   Card,
   CardActionArea,
-  CardMedia,
-  CardActions,
-  IconButton
+  CardMedia
 } from "@mui/material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import SaveIcon from "@mui/icons-material/Save";
 import { KeyOffRounded } from "@mui/icons-material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 const TambahStok = () => {
-  const [arrayImage, setArrayImage] = useState([]);
+  let [arrayImage, setArrayImage] = useState([]);
   let [arrayImageUrl, setArrayImageUrl] = useState([]);
   let [tempGambarId, setTempGambarId] = useState([]);
   let [tempGambar, setTempGambar] = useState([]);
@@ -48,19 +45,11 @@ const TambahStok = () => {
   }, [arrayImage]);
 
   const getUrlImg = () => {
+    let tempArrayImageUrl = [];
     Object.keys(arrayImage).map(function (key, index) {
-      arrayImageUrl.push(URL.createObjectURL(arrayImage[key]));
+      tempArrayImageUrl.push(URL.createObjectURL(arrayImage[key]));
+      setArrayImageUrl(tempArrayImageUrl);
     });
-  };
-
-  const deleteGambar = (key) => {
-    let tempUrl = [];
-    arrayImageUrl.filter((val) => {
-      if (val !== key) {
-        tempUrl.push(val);
-      }
-    });
-    setArrayImageUrl(tempUrl);
   };
 
   const getUsers = async () => {
@@ -78,8 +67,7 @@ const TambahStok = () => {
   };
 
   const groupStokOptions = grup.map((grupStok) => ({
-    label: grupStok.kode,
-    namaGroup: grupStok.namaGroup
+    label: `${grupStok.kode} - ${grupStok.namaGroup}`
   }));
 
   const saveImage = async (formData) => {
@@ -113,12 +101,11 @@ const TambahStok = () => {
     for (let i = 0; i < arrayImage.length; i++) {
       formData.append("file", arrayImage[i]);
       formData.append("upload_preset", "pnwyctyw");
-      saveImage(formData);
+      await saveImage(formData);
     }
 
     try {
       setLoading(true);
-
       await axios.post(`${tempUrl}/stoks`, {
         gambarId: tempGambarId,
         gambar: tempGambar,
@@ -178,7 +165,7 @@ const TambahStok = () => {
       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
         {arrayImageUrl &&
           arrayImage &&
-          arrayImageUrl.map((key) => (
+          arrayImageUrl.map((key, i) => (
             <Card sx={{ m: "auto", mt: 2 }}>
               <CardActionArea>
                 <CardMedia
@@ -188,20 +175,6 @@ const TambahStok = () => {
                   alt={KeyOffRounded.name}
                 />
               </CardActionArea>
-              <CardActions sx={{ display: "flex", justifyContent: "center" }}>
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="span"
-                >
-                  <DeleteOutlineIcon
-                    color="error"
-                    onClick={() => {
-                      deleteGambar(key);
-                    }}
-                  />
-                </IconButton>
-              </CardActions>
             </Card>
           ))}
       </Box>
@@ -230,16 +203,10 @@ const TambahStok = () => {
             disablePortal
             id="combo-box-demo"
             options={groupStokOptions}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box component="li" {...props}>
-                {option.label} - {option.namaGroup}
-              </Box>
-            )}
             renderInput={(params) => (
               <TextField {...params} label="Kode Groups" />
             )}
-            onInputChange={(e, value) => setKodeGrup(value)}
+            onInputChange={(e, value) => setKodeGrup(value.split(" ", 1)[0])}
           />
           <TextField
             id="outlined-basic"

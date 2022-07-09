@@ -9,9 +9,7 @@ import {
   Pagination,
   Card,
   CardActionArea,
-  CardMedia,
-  CardContent,
-  Backdrop
+  CardMedia
 } from "@mui/material";
 import { ShowTableStok } from "../../components/ShowTable";
 import {
@@ -20,6 +18,7 @@ import {
   usePagination,
   ButtonModifier
 } from "../../components";
+import Carousel from "react-elastic-carousel";
 import { tempUrl } from "../../contexts/ContextProvider";
 import { useStateContext } from "../../contexts/ContextProvider";
 
@@ -27,8 +26,7 @@ const TampilStok = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const { screenSize } = useStateContext();
-  const [open, setOpen] = useState(false);
-  const [gambar, setGambar] = useState("");
+  const [gambar, setGambar] = useState(null);
   const [kode, setKode] = useState("");
   const [namaStok, setNama] = useState("");
   const [merk, setMerk] = useState("");
@@ -43,9 +41,16 @@ const TampilStok = () => {
   const [users, setUser] = useState([]);
   const navigate = useNavigate();
 
+  const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 550, itemsToShow: 2 },
+    { width: 768, itemsToShow: 3 },
+    { width: 1200, itemsToShow: 4 }
+  ];
+
   const [loading, setLoading] = useState(false);
   let [page, setPage] = useState(1);
-  const PER_PAGE = 24;
+  let PER_PAGE = 24;
 
   // Get current posts
   const indexOfLastPost = page * PER_PAGE;
@@ -74,9 +79,7 @@ const TampilStok = () => {
 
   useEffect(() => {
     getUsers();
-    {
-      id && getUserById();
-    }
+    id && getUserById();
   }, [id]);
 
   const getUsers = async () => {
@@ -108,7 +111,7 @@ const TampilStok = () => {
       setLoading(true);
       await axios.delete(`${tempUrl}/stoks/${id}`);
       getUsers();
-      setGambar("");
+      setGambar([]);
       setKode("");
       setNama("");
       setMerk("");
@@ -155,52 +158,35 @@ const TampilStok = () => {
       <Divider sx={{ pt: 4 }} />
 
       {gambar && (
-        <Box sx={{ display: "flex" }}>
-          <Card
-            sx={{ maxWidth: 345 }}
-            sx={{ m: "auto", mt: 2 }}
-            onClick={() => setOpen(!open)}
-          >
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                height="200px"
-                src={gambar}
-                alt={namaStok}
-              />
-              <CardContent>
-                <Typography gutterBottom component="div">
-                  Lihat Gambar
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Box>
-      )}
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-        onClick={() => setOpen(false)}
-      >
-        <Box sx={{ display: "flex" }}>
-          <Card sx={{ maxWidth: 345 }} sx={{ m: "auto", mt: 2 }}>
-            <CardActionArea>
-              <CardMedia
-                component="img"
-                src={gambar}
-                alt={namaStok}
+        <Carousel
+          breakPoints={breakPoints}
+          sx={{ display: "flex", height: "200px" }}
+        >
+          {gambar &&
+            gambar.map((img) => (
+              <Card
                 sx={{
-                  height: {
-                    xs: "300px",
-                    sm: "500px"
-                  }
+                  m: "auto",
+                  mt: 2,
+                  width: "200px",
+                  height: "200px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
                 }}
-              />
-            </CardActionArea>
-          </Card>
-        </Box>
-      </Backdrop>
+              >
+                <CardActionArea disableRipple>
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    src={img}
+                    alt={namaStok}
+                  />
+                </CardActionArea>
+              </Card>
+            ))}
+        </Carousel>
+      )}
 
       <Box
         sx={{

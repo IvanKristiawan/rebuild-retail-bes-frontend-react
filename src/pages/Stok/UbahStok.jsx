@@ -9,12 +9,26 @@ import {
   TextField,
   Button,
   Divider,
-  Autocomplete
+  Autocomplete,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardActions,
+  IconButton
 } from "@mui/material";
+import Carousel from "react-elastic-carousel";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { KeyOffRounded } from "@mui/icons-material";
 
 const UbahStok = () => {
-  const [gambar, setGambar] = useState("");
+  let [arrayImage, setArrayImage] = useState([]);
+  let [arrayImageUrl, setArrayImageUrl] = useState([]);
+  let [deleteGambarId, setDeleteGambarId] = useState([]);
+  let [deleteGambar, setDeleteGambar] = useState([]);
+  let [gambar, setGambar] = useState(null);
+  let [gambarId, setGambarId] = useState(null);
   const [kode, setKode] = useState("");
   const [namaStok, setNama] = useState("");
   const [merk, setMerk] = useState("");
@@ -30,15 +44,52 @@ const UbahStok = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
 
+  const breakPoints = [
+    { width: 1, itemsToShow: 1 },
+    { width: 550, itemsToShow: 2 },
+    { width: 768, itemsToShow: 3 },
+    { width: 1200, itemsToShow: 4 }
+  ];
+
   useEffect(() => {
     getUserById();
     getGroupStok();
-  }, []);
+    getUrlImg();
+  }, [arrayImage]);
+
+  const getUrlImg = () => {
+    let tempArrayImageUrl = [];
+    Object.keys(arrayImage).map(function (key, index) {
+      tempArrayImageUrl.push(URL.createObjectURL(arrayImage[key]));
+      setArrayImageUrl(tempArrayImageUrl);
+    });
+  };
+
+  const hapusGambar = (img, i) => {
+    setGambarId(
+      gambarId.filter((val) => {
+        if (val === gambarId[i] || gambarId.length === 1) {
+          deleteGambarId.push(val);
+        }
+        return val !== gambarId[i];
+      })
+    );
+
+    setGambar(
+      gambar.filter((val) => {
+        if (val === img || gambar.length === 1) {
+          deleteGambar.push(val);
+        }
+        return val !== img;
+      })
+    );
+  };
 
   const getUserById = async () => {
     if (id) {
       setLoading(true);
       const response = await axios.get(`${tempUrl}/stoks/${id}`);
+      setGambarId(response.data.gambarId);
       setGambar(response.data.gambar);
       setKode(response.data.kode);
       setNama(response.data.namaStok);
@@ -54,11 +105,47 @@ const UbahStok = () => {
     }
   };
 
+  const saveImage = async (formData) => {
+    try {
+      setLoading(true);
+
+      arrayImage &&
+        (await axios
+          .post(
+            "https://api.cloudinary.com/v1_1/dbtag5lau/image/upload",
+            formData
+          )
+          .then((response) => {
+            gambar.push(response.data.url);
+            gambarId.push(response.data.public_id);
+          })
+          .catch((e) => {
+            console.log(e);
+          }));
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const updateUser = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    for (let i = 0; i < arrayImage.length; i++) {
+      formData.append("file", arrayImage[i]);
+      formData.append("upload_preset", "pnwyctyw");
+      await saveImage(formData);
+    }
+
     try {
       setLoading(true);
       await axios.patch(`${tempUrl}/stoks/${id}`, {
+        deleteGambar,
+        deleteGambarId,
+        gambarId: gambarId,
+        gambar: gambar,
         kodeGrup,
         kode,
         namaStok,
@@ -85,8 +172,7 @@ const UbahStok = () => {
   };
 
   const groupStokOptions = grup.map((grupStok) => ({
-    label: grupStok.kode,
-    namaGroup: grupStok.namaGroup
+    label: `${grupStok.kode} - ${grupStok.namaGroup}`
   }));
 
   if (loading) {
@@ -100,6 +186,92 @@ const UbahStok = () => {
         Ubah Stok
       </Typography>
       <Divider sx={{ mt: 2 }} />
+      <Box
+        mt={2}
+        textAlign="center"
+        sx={{ display: "flex", flexDirection: "column" }}
+      >
+        <input
+          accept="image/*"
+          type="file"
+          id="select-image"
+          style={{ display: "none" }}
+          onChange={(e) => setArrayImage(e.target.files)}
+          multiple
+        />
+        <label htmlFor="select-image">
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            endIcon={<FileUploadIcon />}
+          >
+            Unggah Gambar
+          </Button>
+        </label>
+      </Box>
+      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+        {arrayImageUrl &&
+          arrayImage &&
+          arrayImageUrl.map((key, i) => (
+            <Card sx={{ m: "auto", mt: 2 }}>
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  height="200px"
+                  src={key}
+                  alt={KeyOffRounded.name}
+                />
+              </CardActionArea>
+            </Card>
+          ))}
+      </Box>
+      <Divider sx={{ mt: 2 }} />
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "300" }}>
+          Hapus Gambar
+        </Typography>
+      </Box>
+      {gambar && gambarId.length !== 0 && (
+        <Carousel
+          breakPoints={breakPoints}
+          sx={{ display: "flex", height: "400px" }}
+        >
+          {gambar &&
+            gambar.map((img, i) => (
+              <Card
+                sx={{
+                  m: "auto",
+                  mt: 2,
+                  width: "200px",
+                  height: "200px",
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                <CardActionArea disableRipple>
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    src={img}
+                    alt={namaStok}
+                    sx={{ display: "flex", maxHeight: "150px" }}
+                  />
+                </CardActionArea>
+                <CardActions
+                  sx={{ display: "flex", justifyContent: "center", mt: "auto" }}
+                >
+                  <IconButton aria-label="delete">
+                    <DeleteIcon
+                      color="error"
+                      onClick={() => hapusGambar(img, i)}
+                    />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            ))}
+        </Carousel>
+      )}
       <Box
         sx={{
           mt: 4,
@@ -125,16 +297,10 @@ const UbahStok = () => {
             disablePortal
             id="combo-box-demo"
             options={groupStokOptions}
-            getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => (
-              <Box component="li" {...props}>
-                {option.label} - {option.namaGroup}
-              </Box>
-            )}
             renderInput={(params) => (
               <TextField {...params} label="Kode Groups" />
             )}
-            onInputChange={(e, value) => setKodeGrup(value)}
+            onInputChange={(e, value) => setKodeGrup(value.split(" ", 1)[0])}
             defaultValue={{ label: kodeGrup }}
           />
           <TextField
