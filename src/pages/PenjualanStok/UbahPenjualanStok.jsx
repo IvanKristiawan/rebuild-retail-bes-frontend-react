@@ -96,6 +96,7 @@ const UbahPenjualanStok = () => {
               <TextField {...params} label="Jenis Transaksi" />
             )}
             defaultValue={{ label: jenis }}
+            onInputChange={(e, value) => setJenis(value)}
           />
         </Box>
       </Box>
