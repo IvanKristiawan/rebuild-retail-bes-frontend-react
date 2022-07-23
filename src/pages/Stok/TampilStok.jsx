@@ -26,7 +26,7 @@ const TampilStok = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const { screenSize } = useStateContext();
-  const [gambar, setGambar] = useState(null);
+  const [gambar, setGambar] = useState([]);
   const [kode, setKode] = useState("");
   const [namaStok, setNama] = useState("");
   const [merk, setMerk] = useState("");
@@ -50,7 +50,7 @@ const TampilStok = () => {
 
   const [loading, setLoading] = useState(false);
   let [page, setPage] = useState(1);
-  let PER_PAGE = 24;
+  let PER_PAGE = 20;
 
   // Get current posts
   const indexOfLastPost = page * PER_PAGE;
@@ -84,7 +84,7 @@ const TampilStok = () => {
 
   const getUsers = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/stoks`);
+    const response = await axios.get(`${tempUrl}/stokForTable`);
     setUser(response.data);
     setLoading(false);
   };
@@ -157,12 +157,12 @@ const TampilStok = () => {
       </Box>
       <Divider sx={{ pt: 4 }} />
 
-      {gambar && (
+      {gambar.length !== 0 && (
         <Carousel
           breakPoints={breakPoints}
           sx={{ display: "flex", height: "200px" }}
         >
-          {gambar &&
+          {gambar.length !== 0 &&
             gambar.map((img) => (
               <Card
                 sx={{

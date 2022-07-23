@@ -20,7 +20,7 @@ const TampilPenjualanStok = () => {
 
   const [loading, setLoading] = useState(false);
   let [page, setPage] = useState(1);
-  const PER_PAGE = 24;
+  const PER_PAGE = 20;
 
   // Get current posts
   const indexOfLastPost = page * PER_PAGE;
@@ -45,7 +45,7 @@ const TampilPenjualanStok = () => {
 
   const getStoks = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/stoks`);
+    const response = await axios.get(`${tempUrl}/stokForTransaction`);
     setStoks(response.data);
     setLoading(false);
   };

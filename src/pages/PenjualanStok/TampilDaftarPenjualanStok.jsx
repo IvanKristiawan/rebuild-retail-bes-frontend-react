@@ -19,7 +19,7 @@ const TampilDaftarPembelianStok = () => {
 
   const [loading, setLoading] = useState(false);
   let [page, setPage] = useState(1);
-  const PER_PAGE = 24;
+  const PER_PAGE = 20;
 
   // Get current posts
   const indexOfLastPost = page * PER_PAGE;

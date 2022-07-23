@@ -28,7 +28,7 @@ const TampilSupplier = () => {
 
   const [loading, setLoading] = useState(false);
   let [page, setPage] = useState(1);
-  const PER_PAGE = 24;
+  const PER_PAGE = 20;
 
   // Get current posts
   const indexOfLastPost = page * PER_PAGE;
@@ -64,7 +64,7 @@ const TampilSupplier = () => {
 
   const getUsers = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/suppliers`);
+    const response = await axios.get(`${tempUrl}/supplierForTable`);
     setUser(response.data);
     setLoading(false);
   };

@@ -36,7 +36,7 @@ const TambahAPenjualanStok = () => {
 
   const getStoks = async () => {
     setLoading(true);
-    const response = await axios.get(`${tempUrl}/stoks`);
+    const response = await axios.get(`${tempUrl}/stokMainInfo`);
     setStok(response.data);
     setLoading(false);
   };
